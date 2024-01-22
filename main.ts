@@ -32,6 +32,7 @@ basic.forever(function () {
             pins.analogWritePin(ioInfo.t1, 0);
             pins.analogWritePin(ioInfo.t2, 0);
             if (sb1Strt) {
+                pins.digitalWritePin(ioInfo.sb1, 1)
                 if (ls1Emp === 1) {
                     state = states.unload;
                     serial.writeLine('Unloading')
