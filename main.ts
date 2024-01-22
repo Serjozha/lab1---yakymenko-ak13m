@@ -1,9 +1,9 @@
 // відображення IO
 let ioInfo = {
     ls1: DigitalPin.P13, ls2: DigitalPin.P14, ls3: DigitalPin.P15, ls4: DigitalPin.P16,
-    lvs1: DigitalPin.P8, lvs2: DigitalPin.P9, lvs3: DigitalPin.P16,
-    t1: AnalogPin.P0, t2: AnalogPin.P1,
-    rt1: AnalogPin.P2,
+    lvs1: AnalogPin.P0, lvs2: DigitalPin.P4, lvs3: DigitalPin.P6,
+    t1: AnalogPin.P1, t2: AnalogPin.P2,
+    rt1: AnalogPin.P10,
     sb1: DigitalPin.P5, sb2: DigitalPin.P11
 };
 enum states { init, idle, load1, load2, load3, rt1, rt2, unload };
@@ -21,7 +21,7 @@ basic.forever(function () {
     let t2 = pins.analogReadPin(ioInfo.t2);
     switch (state) {
         case states.idle:
-            pins.digitalWritePin(ioInfo.lvs1, 0);
+            pins.analogWritePin(ioInfo.lvs1, 0);
             pins.digitalWritePin(ioInfo.lvs2, 0);
             pins.digitalWritePin(ioInfo.lvs3, 0);
             pins.digitalWritePin(ioInfo.ls1, 0);
@@ -32,7 +32,6 @@ basic.forever(function () {
             pins.analogWritePin(ioInfo.t1, 0);
             pins.analogWritePin(ioInfo.t2, 0);
             if (sb1Strt) {
-                pins.digitalWritePin(ioInfo.sb1, 1)
                 if (ls1Emp === 1) {
                     state = states.unload;
                     serial.writeLine('Unloading')
@@ -43,7 +42,7 @@ basic.forever(function () {
             }
             break
         case states.load1:
-            pins.digitalWritePin(ioInfo.lvs1, (1023 * 0.50));
+            pins.analogWritePin(ioInfo.lvs1, (1023*0.9));
             if (ls1Emp === 1) {
                 if (ls2Lo === 1) {
                     state = states.load2;
@@ -52,7 +51,7 @@ basic.forever(function () {
             }
             break
         case states.load2:
-            pins.digitalWritePin(ioInfo.lvs1, 0);
+            pins.analogWritePin(ioInfo.lvs1, 0);
             pins.digitalWritePin(ioInfo.lvs2, 1);
             if (ls3Mdl === 1) {
                 pins.digitalWritePin(ioInfo.lvs2, 0);
@@ -71,9 +70,9 @@ basic.forever(function () {
             }
             break
         case states.load3:
-            pins.digitalWritePin(ioInfo.lvs1, 1023);
+            pins.analogWritePin(ioInfo.lvs1, 1023);
             if (ls4Hi === 1) {
-                pins.digitalWritePin(ioInfo.lvs1, 0);
+                pins.analogWritePin(ioInfo.lvs1, 0);
                 state = states.rt2;
                 pins.analogWritePin(ioInfo.rt1, 1023);
                 serial.writeLine('Start Rotating 2');
