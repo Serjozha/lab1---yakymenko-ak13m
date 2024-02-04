@@ -1,6 +1,6 @@
 // відображення IO
 let ioInfo = {
-    ls1: DigitalPin.P13, ls2: DigitalPin.P14, ls3: DigitalPin.P15, ls4: DigitalPin.P16,
+    le1: DigitalPin.P13, le2: DigitalPin.P14, le3: DigitalPin.P15, le4: DigitalPin.P16,
     lvs1: AnalogPin.P0, lvs2: DigitalPin.P4, lvs3: DigitalPin.P6,
     t1: AnalogPin.P1, t2: AnalogPin.P2,
     rt1: AnalogPin.P10,
@@ -12,10 +12,10 @@ serial.writeLine('Program started');
 basic.forever(function () {
     let sb1Strt = (pins.digitalReadPin(ioInfo.sb1) === 1) || input.buttonIsPressed(Button.A);
     let sb2Stop = (pins.digitalReadPin(ioInfo.sb2) === 1) || input.buttonIsPressed(Button.B);
-    let ls1Emp = pins.digitalReadPin(ioInfo.ls1);
-    let ls2Lo = pins.digitalReadPin(ioInfo.ls2);
-    let ls3Mdl = pins.digitalReadPin(ioInfo.ls3);
-    let ls4Hi = pins.digitalReadPin(ioInfo.ls4);
+    let le1Emp = pins.digitalReadPin(ioInfo.le1);
+    let le2Lo = pins.digitalReadPin(ioInfo.le2);
+    let le3Mdl = pins.digitalReadPin(ioInfo.le3);
+    let le4Hi = pins.digitalReadPin(ioInfo.le4);
     let rt1 = pins.analogReadPin(ioInfo.rt1);
     let t1 = pins.analogReadPin(ioInfo.t1);
     let t2 = pins.analogReadPin(ioInfo.t2);
@@ -24,15 +24,15 @@ basic.forever(function () {
             pins.analogWritePin(ioInfo.lvs1, 0);
             pins.digitalWritePin(ioInfo.lvs2, 0);
             pins.digitalWritePin(ioInfo.lvs3, 0);
-            pins.digitalWritePin(ioInfo.ls1, 0);
-            pins.digitalWritePin(ioInfo.ls2, 0);
-            pins.digitalWritePin(ioInfo.ls3, 0);
-            pins.digitalWritePin(ioInfo.ls4, 0);
+            pins.digitalWritePin(ioInfo.le1, 0);
+            pins.digitalWritePin(ioInfo.le2, 0);
+            pins.digitalWritePin(ioInfo.le3, 0);
+            pins.digitalWritePin(ioInfo.le4, 0);
             pins.analogWritePin(ioInfo.rt1, 0);
             pins.analogWritePin(ioInfo.t1, 0);
             pins.analogWritePin(ioInfo.t2, 0);
             if (sb1Strt) {
-                if (ls1Emp === 1) {
+                if (le1Emp === 1) {
                     state = states.unload;
                     serial.writeLine('Unloading')
                 } else {
@@ -43,8 +43,8 @@ basic.forever(function () {
             break
         case states.load1:
             pins.analogWritePin(ioInfo.lvs1, (1023*0.9));
-            if (ls1Emp === 1) {
-                if (ls2Lo === 1) {
+            if (le1Emp === 1) {
+                if (le2Lo === 1) {
                     state = states.load2;
                     serial.writeLine('Loading 2')
                 }
@@ -53,7 +53,7 @@ basic.forever(function () {
         case states.load2:
             pins.analogWritePin(ioInfo.lvs1, 0);
             pins.digitalWritePin(ioInfo.lvs2, 1);
-            if (ls3Mdl === 1) {
+            if (le3Mdl === 1) {
                 pins.digitalWritePin(ioInfo.lvs2, 0);
                 state = states.rt1;
                 pins.analogWritePin(ioInfo.rt1, 1023);
@@ -71,7 +71,7 @@ basic.forever(function () {
             break
         case states.load3:
             pins.analogWritePin(ioInfo.lvs1, 1023);
-            if (ls4Hi === 1) {
+            if (le4Hi === 1) {
                 pins.analogWritePin(ioInfo.lvs1, 0);
                 state = states.rt2;
                 pins.analogWritePin(ioInfo.rt1, 1023);
